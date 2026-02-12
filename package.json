@@ -1,0 +1,172 @@
+{
+  "name": "myaicopilot",
+  "displayName": "MyAICopilot",
+  "description": "Inline AI code completion and chat for any OpenAI-compatible API - Works in Web & Desktop",
+  "version": "0.1.0",
+  "publisher": "your-publisher-name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/myaicopilot"
+  },
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": ["Machine Learning", "AI", "Programming Languages"],
+  "keywords": [
+    "ai",
+    "copilot",
+    "openai",
+    "completion",
+    "chat",
+    "codespaces",
+    "web"
+  ],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "browser": "./out/extension.web.js",
+  "contributes": {
+    "configuration": {
+      "title": "MyAICopilot",
+      "type": "object",
+      "properties": {
+        "myaicopilot.api.baseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "OpenAI-compatible API base URL (e.g., https://api.openai.com/v1)",
+          "order": 1
+        },
+        "myaicopilot.api.model": {
+          "type": "string",
+          "default": "gpt-4",
+          "description": "Model name for completions and chat",
+          "order": 2
+        },
+        "myaicopilot.api.maxTokens": {
+          "type": "number",
+          "default": 256,
+          "minimum": 1,
+          "maximum": 8192,
+          "description": "Maximum tokens for completions"
+        },
+        "myaicopilot.api.temperature": {
+          "type": "number",
+          "default": 0.1,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Creativity (0=deterministic, 2=random)"
+        },
+        "myaicopilot.autocomplete.debounceMs": {
+          "type": "number",
+          "default": 150,
+          "minimum": 0,
+          "maximum": 2000,
+          "description": "Debounce delay (ms) before sending request"
+        },
+        "myaicopilot.autocomplete.triggerCharacters": {
+          "type": "array",
+          "default": [".", "(", " ", "{"],
+          "items": { "type": "string" },
+          "description": "Characters that trigger autocomplete"
+        },
+        "myaicopilot.autocomplete.supportedLanguages": {
+          "type": "array",
+          "default": [
+            "javascript",
+            "typescript",
+            "typescriptreact",
+            "python",
+            "jsx",
+            "tsx"
+          ],
+          "items": { "type": "string" },
+          "description": "Enable autocomplete for these language IDs"
+        },
+        "myaicopilot.chat.maxHistoryMessages": {
+          "type": "number",
+          "default": 20,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Max chat history context (0 to disable)"
+        },
+        "myaicopilot.logging.level": {
+          "type": "string",
+          "default": "info",
+          "enum": ["error", "warn", "info", "debug"],
+          "description": "Output channel log level"
+        },
+        "myaicopilot.cache.ttlSeconds": {
+          "type": "number",
+          "default": 600,
+          "minimum": 60,
+          "maximum": 3600,
+          "description": "Completion cache TTL in seconds"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "myaicopilot.showApiKeyInput",
+        "title": "Set API Key",
+        "category": "MyAICopilot",
+        "icon": "$(key)"
+      },
+      {
+        "command": "myaicopilot.resetApiKey",
+        "title": "Reset API Key",
+        "category": "MyAICopilot",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "myaicopilot.diagnostic",
+        "title": "Run Diagnostic",
+        "category": "MyAICopilot",
+        "icon": "$(check)"
+      },
+      {
+        "command": "myaicopilot.completionAccepted",
+        "title": "Completion Accepted",
+        "category": "MyAICopilot"
+      }
+    ],
+    "chatParticipants": [
+      {
+        "id": "myaicopilot.chat",
+        "name": "copilot",
+        "fullName": "MyAICopilot Chat",
+        "description": "AI assistant for code explanation, refactoring, and generation",
+        "isDefault": true,
+        "commands": [
+          {
+            "name": "explain",
+            "description": "Explain the selected code",
+            "sampleRequest": "Explain this function"
+          },
+          {
+            "name": "refactor",
+            "description": "Refactor code with AI suggestions",
+            "sampleRequest": "Refactor this code to be more efficient"
+          },
+          {
+            "name": "generate",
+            "description": "Generate new code",
+            "sampleRequest": "Generate a React component"
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node esbuild.js",
+    "compile": "node esbuild.js",
+    "package": "vsce package --no-dependencies",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.88.0",
+    "@types/node": "20.x",
+    "esbuild": "^0.20.0",
+    "@vscode/vsce": "^2.26.0",
+    "typescript": "^5.4.0"
+  }
+}
